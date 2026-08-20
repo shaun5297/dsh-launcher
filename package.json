@@ -1,0 +1,33 @@
+{
+  "name": "dsh-launcher",
+  "version": "0.1.0",
+  "description": "One-click launcher for DeepSeek Harness: starts the backend (dsh web) if needed, waits until it is ready, then opens the main page in a new Chrome window. CLI only, zero dependencies.",
+  "type": "module",
+  "bin": {
+    "dsh-launcher": "./bin/dsh-launcher.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "launcher",
+    "one-click",
+    "cli"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shaun5297/dsh-launcher.git"
+  }
+}
