@@ -78,7 +78,7 @@ test("startBackend creates missing log dir and returns detached child", async ()
   const dir = mkdtempSync(join(tmpdir(), "dsh-launcher-log-"));
   const logFile = join(dir, "nested", "deep", "web.log");
   const child = startBackend({
-    dshBin: process.execPath, // node itself: runs and exits, but spawn should succeed
+    dshBin: process.execPath, // node: spawn must succeed; we kill it right away
     profile: "web",
     host: "127.0.0.1",
     port: 30999,
@@ -86,6 +86,9 @@ test("startBackend creates missing log dir and returns detached child", async ()
   });
   assert.ok(child);
   assert.ok(existsSync(join(dir, "nested", "deep")), "log dir should be created");
-  await new Promise((r) => child.once("close", r));
-  child.kill(); // no-op if already closed
+  // Deterministic cleanup: detached children must not keep the event loop
+  // alive (unref'd), so terminate explicitly and wait for close.
+  const closed = new Promise((r) => child.once("close", r));
+  child.kill();
+  await closed;
 });
