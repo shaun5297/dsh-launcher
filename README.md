@@ -7,7 +7,7 @@
 - **CLI 工具**：检测后台是否在运行 → 未运行则自动启动 `dsh web` → 等待就绪 → 在 **Chrome 新窗口** 中打开主页面。
 - **Harness 插件（bundle）**：`dsh plugin add` 可安装，为 agent 提供 `harness_launch` 工具（同样的检测→启动→等待→打开逻辑），让 agent 自己也能拉起/恢复 harness。
 
-> **平台支持**：macOS 完整支持（已实测）；Windows / Linux 已适配代码（`start chrome` / `google-chrome` 新窗口、`.cmd` / `.desktop` 快捷方式）但尚未在真实环境验证，遇到问题欢迎提 issue。
+> **平台支持**：macOS / Windows 完整支持（已实测）；Linux 已适配代码（`google-chrome` 新窗口、`.desktop` 快捷方式）但尚未在真实环境验证，遇到问题欢迎提 issue。
 
 ![logo](assets/logo.png)
 
@@ -97,7 +97,7 @@ dsh-launcher --dry-run
 | 平台 | 启动后台 | 浏览器新窗口 | 桌面快捷方式 | 实测状态 |
 |---|---|---|---|---|
 | macOS | ✅ | ✅ `open -na "Google Chrome" --new-window` | ✅ `.command` | ✅ 已实测 |
-| Windows | ✅ | ✅ `start chrome --new-window` | ✅ `.cmd` | ⚠️ 代码已适配，未实测 |
+| Windows | ✅ | ✅ `start chrome --new-window` | ✅ `.cmd` | ✅ 已实测 |
 | Linux | ✅ | ✅ `google-chrome --new-window`（回退 `xdg-open`） | ✅ `.desktop` | ⚠️ 代码已适配，未实测 |
 
 浏览器打开失败时会自动回退系统默认浏览器。
