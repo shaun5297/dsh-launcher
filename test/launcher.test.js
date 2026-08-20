@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   DEFAULTS,
   urlFor,
@@ -8,6 +11,7 @@ import {
   resolveDshBin,
   openInNewWindow,
   platform,
+  startBackend,
 } from "../lib/launcher.js";
 
 test("urlFor builds correct URLs", () => {
@@ -68,4 +72,20 @@ test("openInNewWindow returns a command array for the current platform", () => {
   assert.ok(cmd.join(" ").includes("http://127.0.0.1:3080/"));
   const named = openInNewWindow("http://x/", { browser: "Edge" });
   assert.ok(named.join(" ").includes("Edge"));
+});
+
+test("startBackend creates missing log dir and returns detached child", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "dsh-launcher-log-"));
+  const logFile = join(dir, "nested", "deep", "web.log");
+  const child = startBackend({
+    dshBin: process.execPath, // node itself: runs and exits, but spawn should succeed
+    profile: "web",
+    host: "127.0.0.1",
+    port: 30999,
+    webLogFile: logFile,
+  });
+  assert.ok(child);
+  assert.ok(existsSync(join(dir, "nested", "deep")), "log dir should be created");
+  await new Promise((r) => child.once("close", r));
+  child.kill(); // no-op if already closed
 });
