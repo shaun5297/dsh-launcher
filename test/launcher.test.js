@@ -96,9 +96,11 @@ test("startBackend creates missing log dir and returns detached child", async ()
   });
   assert.ok(child);
   assert.ok(existsSync(join(dir, "nested", "deep")), "log dir should be created");
-  // Deterministic cleanup: detached children must not keep the event loop
-  // alive (unref'd), so terminate explicitly and wait for close.
-  const closed = new Promise((r) => child.once("close", r));
-  child.kill();
-  await closed;
+  // The child may already have exited (node rejects unknown flags quickly), so
+  // resolve immediately if close already fired; otherwise kill and wait.
+  await new Promise((resolve) => {
+    if (child.exitCode !== null || child.signalCode !== null) return resolve();
+    child.once("close", resolve);
+    child.kill();
+  });
 });
