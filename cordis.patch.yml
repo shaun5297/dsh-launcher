@@ -1,0 +1,9 @@
+# dsh-launcher bundle layer. Provides the `harness_launch` agent tool
+# (detect -> start backend -> wait ready -> open browser new window).
+- insert:
+    - id: dsh-launcher
+      name: dsh-launcher
+      config:
+        host: !!js "process.env.DSH_LAUNCHER_HOST ?? '127.0.0.1'"
+        port: !!js "Number(process.env.DSH_LAUNCHER_PORT ?? 3080)"
+        browser: !!js "process.env.DSH_LAUNCHER_BROWSER"

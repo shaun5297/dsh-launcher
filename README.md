@@ -1,12 +1,17 @@
 # dsh-launcher
 
-一键启动 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 CLI 工具：检测后台是否在运行，未运行则自动启动 `dsh web`，等待就绪后在 **Chrome 新窗口** 中打开主页面。零依赖。
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 一键启动器，双形态：
+
+- **CLI 工具**：检测后台是否在运行 → 未运行则自动启动 `dsh web` → 等待就绪 → 在 **Chrome 新窗口** 中打开主页面。
+- **Harness 插件（bundle）**：`dsh plugin add` 可安装，为 agent 提供 `harness_launch` 工具（同样的检测→启动→等待→打开逻辑），让 agent 自己也能拉起/恢复 harness。
 
 > **平台支持**：macOS 完整支持（已实测）；Windows / Linux 已适配代码（`start chrome` / `google-chrome` 新窗口、`.cmd` / `.desktop` 快捷方式）但尚未在真实环境验证，遇到问题欢迎提 issue。
 
 ![logo](assets/logo.png)
 
 ## 安装
+
+### 作为 CLI 工具
 
 ```bash
 # 从 git 仓库（推荐，一键复制）
@@ -17,6 +22,20 @@ npm install -g /path/to/dsh-launcher
 ```
 
 安装后即可使用 `dsh-launcher` 命令。
+
+### 作为 Harness 插件
+
+```bash
+dsh plugin --profile web add dsh-launcher
+```
+
+刷新页面（或重启 `dsh web`）后，agent 即获得 `harness_launch` 工具：检测后台 → 启动（若未运行）→ 等待就绪 → Chrome 新窗口打开主页面。插件配置可通过环境变量覆盖：
+
+| 环境变量 | 默认值 | 说明 |
+|---|---|---|
+| `DSH_LAUNCHER_HOST` | `127.0.0.1` | 后台监听主机 |
+| `DSH_LAUNCHER_PORT` | `3080` | 后台监听端口 |
+| `DSH_LAUNCHER_BROWSER` | Chrome | 打开的浏览器 |
 
 ## 用法
 

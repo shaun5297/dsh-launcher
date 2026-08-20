@@ -1,29 +1,56 @@
 {
   "name": "dsh-launcher",
-  "version": "0.1.0",
-  "description": "One-click launcher for DeepSeek Harness: starts the backend (dsh web) if needed, waits until it is ready, then opens the main page in a new Chrome window. CLI only, zero dependencies.",
+  "version": "0.2.0",
+  "description": "One-click launcher for DeepSeek Harness: CLI (detect → start dsh web → wait ready → open Chrome new window) + harness bundle plugin with the harness_launch agent tool. Zero runtime deps beyond dsh-tools.",
   "type": "module",
   "bin": {
     "dsh-launcher": "./bin/dsh-launcher.js"
   },
+  "exports": {
+    ".": "./src/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
   "files": [
     "bin",
     "lib",
+    "src",
+    "assets",
+    "cordis.patch.yml",
     "README.md",
     "LICENSE"
   ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/index.js && node --check bin/dsh-launcher.js && node --check lib/launcher.js"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.7"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
   },
   "keywords": [
     "deepseek-harness",
     "dsh",
+    "dsh-plugin",
     "launcher",
     "one-click",
-    "cli"
+    "cli",
+    "browser"
   ],
   "license": "MIT",
   "repository": {
