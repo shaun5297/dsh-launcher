@@ -196,9 +196,9 @@ export async function main(argv) {
   return 0;
 }
 
-async function makeShortcut(opts, log) {
+export async function makeShortcut(opts, log, desktopDir) {
   const url = urlFor(opts.host, opts.port);
-  const desktop = join(homedir(), "Desktop");
+  const desktop = desktopDir ?? join(homedir(), "Desktop");
   try { mkdirSync(desktop, { recursive: true }); } catch {}
 
   // Re-invoke this same module with `node <absolute bin path> start …`

@@ -1,5 +1,7 @@
 # dsh-launcher
 
+[![CI](https://github.com/shaun5297/dsh-launcher/actions/workflows/ci.yml/badge.svg)](https://github.com/shaun5297/dsh-launcher/actions/workflows/ci.yml)
+
 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 一键启动器，双形态：
 
 - **CLI 工具**：检测后台是否在运行 → 未运行则自动启动 `dsh web` → 等待就绪 → 在 **Chrome 新窗口** 中打开主页面。
