@@ -56,7 +56,7 @@ Options:
   -h, --help           show this help
 `;
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const opts = {
     command: "start",
     host: DEFAULTS.host,
