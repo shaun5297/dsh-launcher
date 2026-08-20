@@ -32,7 +32,8 @@
   },
   "scripts": {
     "test": "node --test test/*.test.js",
-    "check": "node --check src/index.js && node --check bin/dsh-launcher.js && node --check lib/launcher.js"
+    "check": "node --check src/index.js && node --check bin/dsh-launcher.js && node --check lib/launcher.js",
+    "prepublishOnly": "npm run check && npm test"
   },
   "dependencies": {
     "@deepseek-ai/dsh-tools": "0.1.0-rc.7"

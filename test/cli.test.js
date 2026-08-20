@@ -48,3 +48,9 @@ test("unknown option exits with code 2", () => {
     process.exit = origExit;
   }
 });
+
+test("--json flag is parsed", () => {
+  const o = parseArgs(["status", "--json"]);
+  assert.equal(o.command, "status");
+  assert.equal(o.json, true);
+});

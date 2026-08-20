@@ -53,6 +53,7 @@ Options:
   --log <file>         launcher log file
   --no-open            start the backend only, do not open a browser
   --dry-run            print what would run, do nothing
+  --json               status output as JSON (status --json)
   -h, --help           show this help
 `;
 
@@ -68,6 +69,7 @@ export function parseArgs(argv) {
     log: undefined,
     noOpen: false,
     dryRun: false,
+    json: false,
     help: false,
   };
   const positional = [];
@@ -85,6 +87,7 @@ export function parseArgs(argv) {
       case "--log": opts.log = next(); break;
       case "--no-open": opts.noOpen = true; break;
       case "--dry-run": opts.dryRun = true; break;
+      case "--json": opts.json = true; break;
       default:
         if (a.startsWith("-")) {
           console.error(`unknown option: ${a}\n\n${USAGE}`);
@@ -134,7 +137,12 @@ export async function main(argv) {
 
   if (opts.command === "status") {
     const up = await portOpen(opts.host, opts.port);
-    console.log(`backend: ${up ? "RUNNING" : "STOPPED"} — ${url}`);
+    const payload = { running: up, url, host: opts.host, port: opts.port };
+    if (opts.json) {
+      process.stdout.write(JSON.stringify(payload) + "\n");
+    } else {
+      console.log(`backend: ${up ? "RUNNING" : "STOPPED"} — ${url}`);
+    }
     return up ? 0 : 1;
   }
 
