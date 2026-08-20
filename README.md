@@ -51,8 +51,9 @@ dsh-launcher start
 # 后台已在运行时，仅打开主页面（不开新后台）
 dsh-launcher open
 
-# 查看后台状态
+# 查看后台状态（--json 输出 JSON 便于脚本化）
 dsh-launcher status
+dsh-launcher status --json   # {"running":true,"url":"http://127.0.0.1:3080/",...}
 
 # 在桌面生成一键启动快捷方式（macOS .command / Windows .cmd / Linux .desktop）
 dsh-launcher make-shortcut

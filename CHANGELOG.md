@@ -3,6 +3,9 @@
 ## [0.2.0] - 2026-08-20
 
 ### Added
+- `status --json` machine-readable output; `prepublishOnly` publish gate.
+
+### Added
 - Harness bundle plugin: installable via `dsh plugin add dsh-launcher`, registers the `harness_launch` agent tool (detect → start → wait → open browser new window).
 - `cordis.patch.yml` bundle manifest with env-configurable host/port/browser (`DSH_LAUNCHER_HOST` / `DSH_LAUNCHER_PORT` / `DSH_LAUNCHER_BROWSER`).
 - GitHub Actions CI (Node 18/20/22 matrix): syntax check + 16 unit tests.
