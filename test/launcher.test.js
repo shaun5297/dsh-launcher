@@ -88,7 +88,7 @@ test("startBackend creates missing log dir and returns detached child", async ()
   const dir = mkdtempSync(join(tmpdir(), "dsh-launcher-log-"));
   const logFile = join(dir, "nested", "deep", "web.log");
   const child = startBackend({
-    dshBin: process.execPath, // node: spawn must succeed; we kill it right away
+    dshBin: process.execPath, // node rejects unknown flags and exits quickly
     profile: "web",
     host: "127.0.0.1",
     port: 30999,
@@ -96,11 +96,18 @@ test("startBackend creates missing log dir and returns detached child", async ()
   });
   assert.ok(child);
   assert.ok(existsSync(join(dir, "nested", "deep")), "log dir should be created");
-  // The child may already have exited (node rejects unknown flags quickly), so
-  // resolve immediately if close already fired; otherwise kill and wait.
-  await new Promise((resolve) => {
-    if (child.exitCode !== null || child.signalCode !== null) return resolve();
-    child.once("close", resolve);
-    child.kill();
-  });
+  // The child is detached + unref'd, so its `close` event never keeps the
+  // event loop alive and may not fire at all (node 18+). Poll exitCode with a
+  // timer instead — the process exits on its own (unknown flag), or we kill it.
+  const deadline = Date.now() + 5000;
+  while (Date.now() < deadline && child.exitCode === null && child.signalCode === null) {
+    await sleep(20);
+  }
+  if (child.exitCode === null && child.signalCode === null) child.kill();
+  await sleep(20);
+  assert.ok(child.exitCode !== null || child.signalCode !== null, "child should have exited");
 });
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
