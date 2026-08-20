@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { parseArgs } from "../bin/dsh-launcher.js";
 
 test("defaults to start command with sane defaults", () => {
@@ -53,4 +54,13 @@ test("--json flag is parsed", () => {
   const o = parseArgs(["status", "--json"]);
   assert.equal(o.command, "status");
   assert.equal(o.json, true);
+});
+
+test("bin entrypoint runs when invoked directly", () => {
+  const res = spawnSync(process.execPath, ["bin/dsh-launcher.js", "--help"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8",
+  });
+  assert.equal(res.status, 0, res.stderr);
+  assert.match(res.stdout, /Usage:/);
 });

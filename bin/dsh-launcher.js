@@ -21,8 +21,9 @@
  *   -h, --help           show this help
  */
 import { writeFileSync, chmodSync, mkdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { homedir } from "node:os";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   DEFAULTS,
   resolveDshBin,
@@ -210,7 +211,7 @@ export async function makeShortcut(opts, log, desktopDir) {
   try { mkdirSync(desktop, { recursive: true }); } catch {}
 
   // Re-invoke this same module with `node <absolute bin path> start …`
-  const selfPath = new URL(import.meta.url).pathname;
+  const selfPath = fileURLToPath(import.meta.url);
   const patchArgs = opts.patches.map((p) => `--patch ${JSON.stringify(p)}`).join(" ");
   const baseArgs = `--host ${opts.host} --port ${opts.port} --profile ${opts.profile} ${patchArgs}`;
 
@@ -255,6 +256,6 @@ Icon=utilities-terminal
 }
 
 // Direct execution support (bin entry).
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   main(process.argv.slice(2)).then((code) => process.exit(code));
 }
