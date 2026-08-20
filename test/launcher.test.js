@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, existsSync } from "node:fs";
+import { mkdtempSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   DEFAULTS,
   urlFor,
@@ -57,12 +58,21 @@ test("resolveDshBin honors an existing DSH_BIN override and falls back otherwise
     assert.notEqual(fallback, "/nonexistent/dsh");
 
     // An existing override wins.
-    process.env.DSH_BIN = new URL(import.meta.url).pathname; // a real file
+    process.env.DSH_BIN = fileURLToPath(import.meta.url); // a real file
     assert.equal(resolveDshBin(), process.env.DSH_BIN);
   } finally {
     if (prev === undefined) delete process.env.DSH_BIN;
     else process.env.DSH_BIN = prev;
   }
+});
+
+test("resolveDshBin finds the npm dsh.cmd shim on Windows", { skip: process.platform !== "win32" }, () => {
+  const appData = mkdtempSync(join(tmpdir(), "dsh-launcher-appdata-"));
+  const npmDir = join(appData, "npm");
+  const shim = join(npmDir, "dsh.cmd");
+  mkdirSync(npmDir, { recursive: true });
+  writeFileSync(shim, "@echo off\r\n");
+  assert.equal(resolveDshBin({ APPDATA: appData }), shim);
 });
 
 test("openInNewWindow returns a command array for the current platform", () => {
